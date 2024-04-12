@@ -1,0 +1,20 @@
+{"source": "package com.example;
+
+      import com.launchdarkly.sdk.*;
+
+      class Sample {
+        public void sampleMethod() {
+          LDClient client = new LDClient(\"sdk-key-123abc\");
+          LDContext context = LDContext.build();
+          boolean flagValue = client.boolVariation(\"flag-key-123abc\", context, false);
+          if (flagValue) {
+            System.out.println(\"flag-key-123abc is enabled\");
+          } else {
+            System.out.println(\"flag-key-123abc is disabled\");
+          }
+        }
+      }",
+ "language": "java",
+ "stale_flag":"flag-key-123abc",
+ "value": "True"
+ }

@@ -1,0 +1,94 @@
+{
+	"output": "package com.example;      import com.launchdarkly.sdk.*;      class Sample {        public void sampleMethod() {          LDClient client = new LDClient(\"sdk-key-123abc\");          LDContext context = LDContext.build();          System.out.println(\"flag-key-123abc is enabled\");        }      }",
+	"rewrites": [{
+		"original": "import com.launchdarkly.sdk.*;",
+		"range": {
+			"start_byte": 26,
+			"end_byte": 56,
+			"start_point": {
+				"row": 0,
+				"column": 26
+			},
+			"end_point": {
+				"row": 0,
+				"column": 56
+			}
+		},
+		"replacement": "import com.launchdarkly.sdk.*;"
+	}, {
+		"original": "client.boolVariation(\"flag-key-123abc\", context, false)",
+		"range": {
+			"start_byte": 249,
+			"end_byte": 304,
+			"start_point": {
+				"row": 0,
+				"column": 249
+			},
+			"end_point": {
+				"row": 0,
+				"column": 304
+			}
+		},
+		"replacement": "true"
+	}, {
+		"original": "          boolean flagValue = true;",
+		"range": {
+			"start_byte": 219,
+			"end_byte": 254,
+			"start_point": {
+				"row": 0,
+				"column": 219
+			},
+			"end_point": {
+				"row": 0,
+				"column": 254
+			}
+		},
+		"replacement": ""
+	}, {
+		"original": "flagValue",
+		"range": {
+			"start_byte": 233,
+			"end_byte": 242,
+			"start_point": {
+				"row": 0,
+				"column": 233
+			},
+			"end_point": {
+				"row": 0,
+				"column": 242
+			}
+		},
+		"replacement": "true"
+	}, {
+		"original": "if (true) {            System.out.println(\"flag-key-123abc is enabled\");          } else {            System.out.println(\"flag-key-123abc is disabled\");          }",
+		"range": {
+			"start_byte": 229,
+			"end_byte": 392,
+			"start_point": {
+				"row": 0,
+				"column": 229
+			},
+			"end_point": {
+				"row": 0,
+				"column": 392
+			}
+		},
+		"replacement": "{            System.out.println(\"flag-key-123abc is enabled\");          }"
+	}, {
+		"original": "{            System.out.println(\"flag-key-123abc is enabled\");          }",
+		"range": {
+			"start_byte": 229,
+			"end_byte": 302,
+			"start_point": {
+				"row": 0,
+				"column": 229
+			},
+			"end_point": {
+				"row": 0,
+				"column": 302
+			}
+		},
+		"replacement": "System.out.println(\"flag-key-123abc is enabled\");"
+	}]
+}
