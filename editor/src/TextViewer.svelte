@@ -2,8 +2,10 @@
 <script>
 	export let text = '';
 
-	// @ts-ignore
-	export function handleChange(event) {
+	/**
+	 * @param {{ target: { value: string; }; }} event
+	 */
+	 export function handleChange(event) {
 		text = event.target.value;
 	}
 </script>

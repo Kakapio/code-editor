@@ -1,13 +1,14 @@
 <script>
 	import TextEditor from '../TextEditor.svelte';
 	import TextViewer from '../TextViewer.svelte';
+    import LangMenu from '../LangMenu.svelte';
 
 	let inputText = '';
 
     /**
 	 * @type {{ clear: () => void; }}
 	 */
-    let editorInstance;
+    let editorInstance
     let viewerInstance;
 
     function clearEditor() {
@@ -20,6 +21,8 @@
     <button>Step Once</button>
     <button on:click={clearEditor}>Clear</button>
 </div>
+
+<LangMenu />
 
 
 <!-- We use 'bind' here because data flows from Child -> Parent rather than down from Parent -> Child
