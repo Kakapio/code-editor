@@ -32,6 +32,7 @@
 
 	function clearEditor() {
 		editorInstance.clear();
+		viewerInstance.clear();
 		selectedLang = '';
 		keyValueInstance.clear();
 		toast.success('Cleared editor!');
@@ -67,16 +68,15 @@
 			}
 		})
 			.then((response) => response.json())
-			.then((data) => outputText = data["output"])
-			.catch(error => {
-				toast.error("Encountered an error: " + error.message);
+			.then((data) => (outputText = data['output']))
+			.catch((error) => {
+				toast.error('Encountered an error: ' + error.message);
 			});
 	}
 </script>
 
 <div class="buttonContainer">
 	<button on:click={runCleanup}>Run</button>
-	<button>Step Once</button>
 	<button on:click={clearEditor}>Clear</button>
 </div>
 
