@@ -7,7 +7,6 @@
 	let options = [];
 
 	export let selectedOption = '';
-	export let flagInput = '';
 
 	async function fetchData() {
 		try {
@@ -32,12 +31,6 @@
 	function handleSelection(event) {
 		selectedOption = event.target.value;
 	}
-
-	// Function to handle flag input change
-	// @ts-ignore
-	function handleFlagInputChange(event) {
-		flagInput = event.target.value;
-	}
 </script>
 
 <div style="display: flex; align-items: center;">
@@ -48,12 +41,6 @@
 			<option value={option}>{option}</option>
 		{/each}
 	</select>
-
-	<input
-		type="text"
-		placeholder={flagInput ? '' : 'Enter flag here'}
-		on:input={handleFlagInputChange}
-	/>
 </div>
 
 <p style="color: white;">Selected option: {selectedOption}</p>

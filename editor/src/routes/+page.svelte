@@ -8,7 +8,6 @@
 	let inputText = '';
 	let outputText = 'This is where your cleaned up code will be...';
 	let selectedLang = '';
-	let selectedFlag = '';
 
 	/**
 	 * @type {TextEditor}
@@ -22,10 +21,15 @@
 	 * @type {LangMenu}
 	 */
 	let menuInstance;
+	/**
+	 * @type {KeyValue}
+	 */
+	let keyValueInstance;
 
 	function clearEditor() {
 		editorInstance.clear();
 		selectedLang = '';
+		keyValueInstance.clear();
 		toast.success('Cleared editor!');
 	}
 
@@ -52,12 +56,11 @@
 
 <LangMenu
 	bind:selectedOption={selectedLang}
-	bind:flagInput={selectedFlag}
 	bind:this={menuInstance} />
 
 <Toaster />
 
-<KeyValue />
+<KeyValue bind:this={keyValueInstance} />
 
 <!-- We use 'bind:text' here because data flows from Child -> Parent rather than down from Parent -> Child
      The Editor gives data to our main app page, which then passes it to the Viewer as a "prop". -->
