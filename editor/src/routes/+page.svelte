@@ -67,7 +67,7 @@
 			}
 		})
 			.then((response) => response.json())
-			.then((data) => outputText = JSON.stringify(data))
+			.then((data) => outputText = data["output"])
 			.catch(error => {
 				toast.error("Encountered an error: " + error.message);
 			});
@@ -112,7 +112,7 @@
 	}
 
 	button {
-		font-size: 40px;
+		font-size: 32px;
 		font-family: 'Roboto', sans-serif;
 		margin: 0 10px;
 		background-color: #191b22;
