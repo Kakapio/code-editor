@@ -42,15 +42,35 @@
 			toast.error('You must select a language.');
 			return;
 		}
+		if (inputText === '') {
+			toast.error('You most provide some code.');
+			return;
+		}
 
+		// Assembling our data...
 		let postData = {
 			source: inputText,
 			language: selectedLang
 		};
 
-		let jsonCompatibleData = JSON.stringify(keyValues);
-
+		keyValues.forEach((item) => {
+			postData[item.key] = item.value;
+		});
+		let jsonCompatibleData = JSON.stringify(postData);
 		console.log(jsonCompatibleData);
+
+		fetch('https://5znoj6mlp7xtbjgyofoqzartjm0xdxkp.lambda-url.us-east-1.on.aws/playground/play', {
+			method: 'POST',
+			body: jsonCompatibleData,
+			headers: {
+				'Content-type': 'application/json'
+			}
+		})
+			.then((response) => response.json())
+			.then((data) => outputText = JSON.stringify(data))
+			.catch(error => {
+				toast.error("Encountered an error: " + error.message);
+			});
 	}
 </script>
 

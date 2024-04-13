@@ -1,0 +1,116 @@
+This is so you can easily copy and paste this into the webpage.
+
+package com.example;
+
+      import com.launchdarkly.sdk.*;
+
+      class Sample {
+        public void sampleMethod() {
+          LDClient client = new LDClient("sdk-key-123abc");
+          LDContext context = LDContext.build();
+          boolean flagValue = client.boolVariation("flag-key-123abc", context, false);
+          if (flagValue) {
+            System.out.println("flag-key-123abc is enabled");
+          } else {
+            System.out.println("flag-key-123abc is disabled");
+          }
+        }
+      }
+
+
+The output should be:
+
+{
+	"output": "package com.example;\n\n      import com.launchdarkly.sdk.*;\n\n      class Sample {\n        public void sampleMethod() {\n          LDClient client = new LDClient(\"sdk-key-123abc\");\n          LDContext context = LDContext.build();\n          System.out.println(\"flag-key-123abc is enabled\");\n        }\n      }",
+	"rewrites": [{
+		"original": "import com.launchdarkly.sdk.*;",
+		"range": {
+			"start_byte": 28,
+			"end_byte": 58,
+			"start_point": {
+				"row": 2,
+				"column": 6
+			},
+			"end_point": {
+				"row": 2,
+				"column": 36
+			}
+		},
+		"replacement": "import com.launchdarkly.sdk.*;"
+	}, {
+		"original": "client.boolVariation(\"flag-key-123abc\", context, false)",
+		"range": {
+			"start_byte": 257,
+			"end_byte": 312,
+			"start_point": {
+				"row": 8,
+				"column": 30
+			},
+			"end_point": {
+				"row": 8,
+				"column": 85
+			}
+		},
+		"replacement": "true"
+	}, {
+		"original": "\n          boolean flagValue = true;",
+		"range": {
+			"start_byte": 226,
+			"end_byte": 262,
+			"start_point": {
+				"row": 7,
+				"column": 48
+			},
+			"end_point": {
+				"row": 8,
+				"column": 35
+			}
+		},
+		"replacement": ""
+	}, {
+		"original": "flagValue",
+		"range": {
+			"start_byte": 241,
+			"end_byte": 250,
+			"start_point": {
+				"row": 8,
+				"column": 14
+			},
+			"end_point": {
+				"row": 8,
+				"column": 23
+			}
+		},
+		"replacement": "true"
+	}, {
+		"original": "if (true) {\n            System.out.println(\"flag-key-123abc is enabled\");\n          } else {\n            System.out.println(\"flag-key-123abc is disabled\");\n          }",
+		"range": {
+			"start_byte": 237,
+			"end_byte": 404,
+			"start_point": {
+				"row": 8,
+				"column": 10
+			},
+			"end_point": {
+				"row": 12,
+				"column": 11
+			}
+		},
+		"replacement": "{\n            System.out.println(\"flag-key-123abc is enabled\");\n          }"
+	}, {
+		"original": "{\n            System.out.println(\"flag-key-123abc is enabled\");\n          }",
+		"range": {
+			"start_byte": 237,
+			"end_byte": 312,
+			"start_point": {
+				"row": 8,
+				"column": 10
+			},
+			"end_point": {
+				"row": 10,
+				"column": 11
+			}
+		},
+		"replacement": "System.out.println(\"flag-key-123abc is enabled\");"
+	}]
+}
