@@ -2,33 +2,69 @@
 	import TextEditor from '../TextEditor.svelte';
 	import TextViewer from '../TextViewer.svelte';
 	import LangMenu from '../LangMenu.svelte';
+	import KeyValue from '../KeyValue.svelte'
+	import toast, { Toaster } from 'svelte-french-toast';
 
 	let inputText = '';
+	let outputText = 'This is where your cleaned up code will be...';
+	let selectedLang = '';
+	let selectedFlag = '';
 
 	/**
-	 * @type {{ clear: () => void; }}
+	 * @type {TextEditor}
 	 */
 	let editorInstance;
+	/**
+	 * @type {TextViewer}
+	 */
 	let viewerInstance;
+	/**
+	 * @type {LangMenu}
+	 */
+	let menuInstance;
 
 	function clearEditor() {
 		editorInstance.clear();
+		selectedLang = '';
+		toast.success('Cleared editor!');
+	}
+
+	function runCleanup() {
+		if (selectedLang === '') {
+			toast.error("You must select a language.");
+			return;
+		}
+
+		let postData = {
+			source: inputText,
+			language: selectedLang,
+			stale_flag: selectedFlag,
+			value: true
+		};
 	}
 </script>
 
 <div class="buttonContainer">
-	<button>Run</button>
+	<button on:click={runCleanup}>Run</button>
 	<button>Step Once</button>
 	<button on:click={clearEditor}>Clear</button>
 </div>
 
-<LangMenu />
+<LangMenu
+	bind:selectedOption={selectedLang}
+	bind:flagInput={selectedFlag}
+	bind:this={menuInstance} />
 
-<!-- We use 'bind' here because data flows from Child -> Parent rather than down from Parent -> Child
+<Toaster />
+
+<KeyValue />
+
+<!-- We use 'bind:text' here because data flows from Child -> Parent rather than down from Parent -> Child
      The Editor gives data to our main app page, which then passes it to the Viewer as a "prop". -->
+
 <div class="textContainer">
 	<TextEditor bind:text={inputText} bind:this={editorInstance} />
-	<TextViewer text={inputText} bind:this={viewerInstance} />
+	<TextViewer text={outputText} bind:this={viewerInstance} />
 </div>
 
 <style>
@@ -53,8 +89,8 @@
 		font-family: 'Roboto', sans-serif;
 		margin: 0 10px;
 		background-color: #191b22;
-		outline: 2px solid rgb(0, 195, 255);
-		color: rgb(0, 195, 255);
+		outline: 1px solid rgb(95, 218, 255);
+		color: rgb(95, 218, 255);
 		border-radius: 5px;
 	}
 </style>
