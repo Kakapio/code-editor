@@ -14,7 +14,7 @@
 				'https://5znoj6mlp7xtbjgyofoqzartjm0xdxkp.lambda-url.us-east-1.on.aws/playground/languages'
 			);
 			if (!response.ok) {
-				throw new Error('Network response was not ok');
+				throw new Error('Network response was not ok.');
 			}
 			const responseData = await response.json();
 			options = responseData;
@@ -48,12 +48,12 @@
 <style>
 	/* Style the select element */
 	select {
-		width: 200px; /* Set the width */
-		padding: 6px; /* Add padding */
-		font-size: 16px; /* Set font size */
-		border: 1px solid #21242d; /* Add border */
-		border-radius: 5px; /* Add border radius */
-		background-color: #191b22; /* Set background color */
+		width: 200px;
+		padding: 6px;
+		font-size: 16px;
+		border: 1px solid #21242d;
+		border-radius: 5px;
+		background-color: #191b22;
 		color: white; /* Set text color */
 		appearance: none; /* Remove default arrow */
 		margin-left: 1.85%;
@@ -61,14 +61,14 @@
 
 	/* Style the options */
 	option {
-		background-color: #191b22; /* Set background color */
-		color: white; /* Set text color */
+		background-color: #191b22;
+		color: white;
 	}
 
 	/* Style the selected option */
 	option:checked {
-		background-color: #007bff; /* Set background color */
-		color: #fff; /* Set text color */
+		background-color: #007bff;
+		color: #fff;
 	}
 
 	input {

@@ -2,12 +2,16 @@
 	import TextEditor from '../TextEditor.svelte';
 	import TextViewer from '../TextViewer.svelte';
 	import LangMenu from '../LangMenu.svelte';
-	import KeyValue from '../KeyValue.svelte'
+	import KeyValue from '../KeyValue.svelte';
 	import toast, { Toaster } from 'svelte-french-toast';
 
 	let inputText = '';
 	let outputText = 'This is where your cleaned up code will be...';
 	let selectedLang = '';
+	/**
+	 * @type {{ key: string, value: string }[]}
+	 */
+	let keyValues = [];
 
 	/**
 	 * @type {TextEditor}
@@ -35,16 +39,18 @@
 
 	function runCleanup() {
 		if (selectedLang === '') {
-			toast.error("You must select a language.");
+			toast.error('You must select a language.');
 			return;
 		}
 
 		let postData = {
 			source: inputText,
-			language: selectedLang,
-			stale_flag: selectedFlag,
-			value: true
+			language: selectedLang
 		};
+
+		let jsonCompatibleData = JSON.stringify(keyValues);
+
+		console.log(jsonCompatibleData);
 	}
 </script>
 
@@ -54,13 +60,11 @@
 	<button on:click={clearEditor}>Clear</button>
 </div>
 
-<LangMenu
-	bind:selectedOption={selectedLang}
-	bind:this={menuInstance} />
+<LangMenu bind:selectedOption={selectedLang} bind:this={menuInstance} />
 
 <Toaster />
 
-<KeyValue bind:this={keyValueInstance} />
+<KeyValue bind:pairs={keyValues} bind:this={keyValueInstance} />
 
 <!-- We use 'bind:text' here because data flows from Child -> Parent rather than down from Parent -> Child
      The Editor gives data to our main app page, which then passes it to the Viewer as a "prop". -->
@@ -73,17 +77,17 @@
 <style>
 	/* Set background color on the root element */
 	:root {
-		background-color: #16161c; /* Example color */
+		background-color: #16161c;
 	}
 
 	.textContainer {
-		display: flex; /* Use flexbox */
-		justify-content: space-around; /* Add space between items */
+		display: flex;
+		justify-content: space-around;
 	}
 
 	.buttonContainer {
-		display: flex; /* Use flexbox */
-		justify-content: center; /* Add space between items */
+		display: flex;
+		justify-content: center;
 		margin: 15px 0px;
 	}
 
