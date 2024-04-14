@@ -7,7 +7,7 @@
 	 */
 	 export let rewrites = [];
 
-	let originalText = '';
+	let beforeText = '';
 	let activeTab = 'textarea';
 	/**
 	 * @type {string[]}
@@ -26,8 +26,8 @@
 	 * This is only run when we successfully generate cleaned up code.
 	 */
 	 export function setOriginalText(text) {
-		originalText = text;
-		beforeLines = originalText.split("\n");
+		beforeText = text;
+		beforeLines = beforeText.split("\n");
 	}
 
 	export function clear() {
@@ -57,15 +57,37 @@
 				class:default-text={text === 'This is where your cleaned up code will be...'}
 			></textarea>
 		{:else if activeTab === 'table'}
-		<table>
-			<tbody>
-			  {#each beforeLines as line}
-				<tr>
-				  <td><pre class="code">{line}</pre></td>
-				</tr>
-			  {/each}
-			</tbody>
-		  </table>
+		<div class="two-column-table">
+			<table>
+				<thead>
+					<tr>
+					  <th>Original</th>
+					</tr>
+				  </thead>
+				<tbody>
+				  {#each beforeLines as line}
+					<tr>
+					  <td><pre class="code">{line}</pre></td>
+					</tr>
+				  {/each}
+				</tbody>
+			  </table>
+
+			  <table>
+				<thead>
+					<tr>
+					  <th>Replacement</th>
+					</tr>
+				  </thead>
+				<tbody>
+				  {#each beforeLines as line}
+					<tr>
+					  <td><pre class="code">{line}</pre></td>
+					</tr>
+				  {/each}
+				</tbody>
+			  </table>
+		</div>
 		{/if}
 	</div>
 </div>
@@ -83,6 +105,27 @@
 
 	td {
 		color: white;
+		font-family: 'Roboto', sans-serif;
+	}
+
+	th {
+		color: white;
+		font-family: 'Roboto', sans-serif;
+	}
+
+	tr {
+		background-color: #191b22;
+	}
+
+	table {
+		width: 100%;
+		height: 523px;
+		border-spacing: 0; /* Remove gaps between table rows */
+		border: 2px solid #21242d;
+	}
+
+	th {
+		color: rgb(95, 218, 255);
 	}
 
 	.code {
@@ -122,6 +165,10 @@
 	.tab-content {
 		flex-grow: 1;
 	}
+
+	.two-column-table {
+    display: flex;
+}
 
 	/* Define custom scrollbar colors for entire site */
 	:global(html) {
