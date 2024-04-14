@@ -23,29 +23,35 @@
 </script>
 
 <div class="container">
-    <div class="tab-buttons">
-        <button on:click={() => switchTab('textarea')} class:selected={activeTab === 'textarea'}>Normal</button>
-        <button on:click={() => switchTab('table')} class:selected={activeTab === 'table'}>Diff</button>
-    </div>
-    <div class="tab-content">
-        {#if activeTab === 'textarea'}
-            <textarea bind:value={text} readonly={true} class:default-text={text === 'This is where your cleaned up code will be...'}></textarea>
-        {:else if activeTab === 'table'}
-            <table>
-                <!-- Table content goes here -->
-                <tr>
-                    <th>Column 1</th>
-                    <th>Column 2</th>
-                    <th>Column 3</th>
-                </tr>
-                <tr>
-                    <td>Data 1</td>
-                    <td>Data 2</td>
-                    <td>Data 3</td>
-                </tr>
-            </table>
-        {/if}
-    </div>
+	<div class="tab-buttons">
+		<button on:click={() => switchTab('textarea')} class:selected={activeTab === 'textarea'}
+			>Normal</button
+		>
+		<button on:click={() => switchTab('table')} class:selected={activeTab === 'table'}>Diff</button>
+	</div>
+	<div class="tab-content">
+		{#if activeTab === 'textarea'}
+			<textarea
+				bind:value={text}
+				readonly={true}
+				class:default-text={text === 'This is where your cleaned up code will be...'}
+			></textarea>
+		{:else if activeTab === 'table'}
+			<table>
+				<!-- Table content goes here -->
+				<tr>
+					<th>Column 1</th>
+					<th>Column 2</th>
+					<th>Column 3</th>
+				</tr>
+				<tr>
+					<td>Data 1</td>
+					<td>Data 2</td>
+					<td>Data 3</td>
+				</tr>
+			</table>
+		{/if}
+	</div>
 </div>
 
 <style>
@@ -78,18 +84,23 @@
 	}
 
 	.container {
-        display: flex;
-        flex-direction: column;
-		width: 45%;
-		margin-top: -21px
-    }
+		display: flex;
+		flex-direction: column;
+		width: 55%;
+		margin-top: -21px;
+	}
 
-    .tab-buttons {
-        display: flex;
-        justify-content: start;
-    }
+	.tab-buttons {
+		display: flex;
+		justify-content: start;
+	}
 
-    .tab-content {
-        flex-grow: 1;
-    }
+	.tab-content {
+		flex-grow: 1;
+	}
+
+	/* Define custom scrollbar colors for entire site */
+	:global(html) {
+		scrollbar-color: #21242d #191b22; /* thumb color, track color */
+	}
 </style>

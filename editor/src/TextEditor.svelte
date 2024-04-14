@@ -16,7 +16,7 @@
 
 <style>
 	textarea {
-		width: 45%;
+		width: 35%;
 		height: 500px;
 		border: 2px solid #21242d;
 		padding: 10px;
