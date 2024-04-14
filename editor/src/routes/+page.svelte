@@ -9,6 +9,10 @@
 	let outputText = 'This is where your cleaned up code will be...';
 	let selectedLang = '';
 	/**
+	 * @type {{ original: string, range: string }[]}
+	 */
+	let rewrites = [];
+	/**
 	 * @type {{ key: string, value: string }[]}
 	 */
 	let keyValues = [];
@@ -68,7 +72,11 @@
 			}
 		})
 			.then((response) => response.json())
-			.then((data) => (outputText = data['output']))
+			.then((data) => {
+				outputText = data['output'];
+				rewrites = data['rewrites'];
+				viewerInstance.setOriginalText(inputText); // Pass this in for the 'before' of our diff view. Only shown when successfully processed.
+			})
 			.catch((error) => {
 				toast.error('Encountered an error: ' + error.message);
 			});
@@ -91,7 +99,7 @@
 
 <div class="textContainer">
 	<TextEditor bind:text={inputText} bind:this={editorInstance} />
-	<TextViewer text={outputText} bind:this={viewerInstance} />
+	<TextViewer text={outputText} rewrites={rewrites} bind:this={viewerInstance} />
 </div>
 
 <style>

@@ -12,7 +12,7 @@
 	}
 </script>
 
-<textarea bind:value={text} on:input={handleChange}></textarea>
+<textarea placeholder="Type your code here" bind:value={text} on:input={handleChange}></textarea>
 
 <style>
 	textarea {

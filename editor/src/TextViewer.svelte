@@ -1,13 +1,33 @@
 <!-- TextEditor.svelte -->
 <script>
 	export let text = '';
+	
+	/**
+	 * @type {{ [x: string]: any; }[]}
+	 */
+	 export let rewrites = [];
+
+	let originalText = '';
 	let activeTab = 'textarea';
+	/**
+	 * @type {string[]}
+	 */
+	let beforeLines = [];
 
 	/**
 	 * @param {{ target: { value: string; }; }} event
 	 */
 	export function handleChange(event) {
 		text = event.target.value;
+	}
+
+	/**
+	 * @param {string} text
+	 * This is only run when we successfully generate cleaned up code.
+	 */
+	 export function setOriginalText(text) {
+		originalText = text;
+		beforeLines = originalText.split("\n");
 	}
 
 	export function clear() {
@@ -37,19 +57,15 @@
 				class:default-text={text === 'This is where your cleaned up code will be...'}
 			></textarea>
 		{:else if activeTab === 'table'}
-			<table>
-				<!-- Table content goes here -->
+		<table>
+			<tbody>
+			  {#each beforeLines as line}
 				<tr>
-					<th>Column 1</th>
-					<th>Column 2</th>
-					<th>Column 3</th>
+				  <td><pre class="code">{line}</pre></td>
 				</tr>
-				<tr>
-					<td>Data 1</td>
-					<td>Data 2</td>
-					<td>Data 3</td>
-				</tr>
-			</table>
+			  {/each}
+			</tbody>
+		  </table>
 		{/if}
 	</div>
 </div>
@@ -65,8 +81,16 @@
 		color: white;
 	}
 
+	td {
+		color: white;
+	}
+
+	.code {
+    line-height: 0.1; /* Adjust this value as needed */
+  }
+
 	button {
-		font-size: 14px;
+		font-size: 16px;
 		font-family: 'Roboto', sans-serif;
 		background-color: #21242d;
 		color: rgb(169, 169, 169);
@@ -87,7 +111,7 @@
 		display: flex;
 		flex-direction: column;
 		width: 55%;
-		margin-top: -21px;
+		margin-top: -25px;
 	}
 
 	.tab-buttons {
