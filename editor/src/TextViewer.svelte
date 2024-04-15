@@ -14,7 +14,13 @@
 	 * The original data in a list of lines.
 	 */
 	let originalLines = [];
+	/**
+	 * @type {{value: string; flag: boolean}[]}
+	 */
 	let beforeLines = [];
+	/**
+	 * @type {{value: string; flag: boolean}[]}
+	 */
 	let afterLines = [];
 
 	/**
@@ -55,10 +61,9 @@
 		// I make a lot of assumptions here about rewrites being by line, etc... 
 		// A rewrite occurring in the middle of a line would break this. But even GitHub doesn't do that.
 		for (let i = 0; i < originalLines.length; i++) {
-			
 			let line = originalLines[i];
 			// Count how much white space we have... This is ignored on the backend so we must also do that.
-			let whitespaceCount = line.length - line.trimStart().length; 
+			let whitespaceCount = line.length - line.trimStart().length;
 			let foundMatch = false; // So we can track whether a match was found outside the inner loop.
 
 			// Check the bounds of each line against every item in the rewrite array...
@@ -76,18 +81,18 @@
 
 				// This particular line has been found in our rewrites...
 				if (rewrite.range.start_byte >= start && rewrite.range.end_byte <= end) {
-					console.log("Found a diff at line: ", i);
-					beforeLines.push(rewrite.original);
-					afterLines.push(rewrite.replacement);
+					console.warn("Found a diff at line: ", i);
+					beforeLines.push({ value: rewrite.original, flag: true});
+					afterLines.push({ value: rewrite.original, flag: true});
 					foundMatch = true;
 					break; // TODO: Could there be more than one rewrite for a given set of bytes? here we just assume not.
 				}
 			}
 
 			if (!foundMatch) {
-				console.log("Found nothing at line: ", i);
-				beforeLines.push(originalLines[i]);
-				afterLines.push(originalLines[i]);
+				console.warn("Found nothing at line: ", i);
+				beforeLines.push({ value: originalLines[i], flag: false});
+				afterLines.push({ value: originalLines[i], flag: false});
 			}
 
 			currBytes += originalLines[i].length + 1; // Plus 1 for the new line we just traversed.
@@ -118,9 +123,9 @@
 						</tr>
 					</thead>
 					<tbody>
-						{#each beforeLines as line}
+						{#each beforeLines as {value, flag}}
 							<tr>
-								<td><pre class="code">{line}</pre></td>
+								<td><pre class:codered={flag}>{value}</pre></td>
 							</tr>
 						{/each}
 					</tbody>
@@ -133,9 +138,9 @@
 						</tr>
 					</thead>
 					<tbody>
-						{#each afterLines as line}
+						{#each afterLines as {value, flag}}
 							<tr>
-								<td><pre class="code">{line}</pre></td>
+								<td><pre class:codegreen={flag}>{value}</pre></td>
 							</tr>
 						{/each}
 					</tbody>
@@ -168,6 +173,7 @@
 
 	tr {
 		background-color: #191b22;
+		line-height: 0.1; /* Adjust this value as needed */
 	}
 
 	table {
@@ -181,8 +187,14 @@
 		color: rgb(95, 218, 255);
 	}
 
-	.code {
+	.codered {
 		line-height: 0.1; /* Adjust this value as needed */
+		background-color: #642121;
+	}
+
+	.codegreen {
+		line-height: 0.1; /* Adjust this value as needed */
+		background-color: #246421;
 	}
 
 	button {
