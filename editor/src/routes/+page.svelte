@@ -62,7 +62,7 @@
 			postData[item.key] = item.value;
 		});
 		let jsonCompatibleData = JSON.stringify(postData);
-		console.log("payload: " + jsonCompatibleData);
+		console.log('payload: ' + jsonCompatibleData);
 
 		fetch('https://5znoj6mlp7xtbjgyofoqzartjm0xdxkp.lambda-url.us-east-1.on.aws/playground/play', {
 			method: 'POST',
@@ -73,13 +73,19 @@
 		})
 			.then((response) => response.json())
 			.then((data) => {
-				console.log("received: " + JSON.stringify(data));
+				console.log('received: ' + JSON.stringify(data));
 				outputText = data['output'];
 				rewrites = data['rewrites'];
 			})
 			.catch((error) => {
-				toast.error('Encountered an error: ' + error.message);
-			}).then((_) => viewerInstance.createDiff()); // This statement is necessary to make sure the rewrites are in place before making diffs.
+				if (error.message.includes("Unexpected")) {
+					toast.error("It looks like you forgot to specify the correct arguments. Add the flag and value on the left.");
+				}
+				else { 
+					toast.error('Encountered an error: ' + error.message);
+				}
+			})
+			.then((_) => viewerInstance.createDiff()); // This statement is necessary to make sure the rewrites are in place before making diffs.
 	}
 </script>
 
@@ -99,7 +105,7 @@
 
 <div class="textContainer">
 	<TextEditor bind:text={inputText} bind:this={editorInstance} />
-	<TextViewer originalText={inputText} text={outputText} rewrites={rewrites} bind:this={viewerInstance} />
+	<TextViewer originalText={inputText} text={outputText} {rewrites} bind:this={viewerInstance} />
 </div>
 
 <style>

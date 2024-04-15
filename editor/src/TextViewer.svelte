@@ -54,11 +54,11 @@
 	function generateTables() {
 		beforeLines.length = 0; // Clear our tables.
 		afterLines.length = 0;
-		
-		let currBytes = 0; // the number of bytes we have consumed thus far. Used to track our position.
-		console.log("Rewrites length is " + rewrites.length);
 
-		// I make a lot of assumptions here about rewrites being by line, etc... 
+		let currBytes = 0; // the number of bytes we have consumed thus far. Used to track our position.
+		console.log('Rewrites length is ' + rewrites.length);
+
+		// I make a lot of assumptions here about rewrites being by line, etc...
 		// A rewrite occurring in the middle of a line would break this. But even GitHub doesn't do that.
 		for (let i = 0; i < originalLines.length; i++) {
 			let line = originalLines[i];
@@ -74,25 +74,41 @@
 				let start = currBytes; // Starting byte of this line.
 				let end = start + line.length; // End byte.
 
-				console.log("line:" + line + "\nstart: " + 
-				start + " start_byte: " + rewrite.range.start_byte + "\nend: " + end + " end_byte: " + rewrite.range.end_byte + 
-				"\n first condition: " + (rewrite.range.start_byte >= start) + " second condition: " + (rewrite.range.end_byte <= end) + 
-				"\ncurrBytes: " + currBytes + " whitespacecount: " + whitespaceCount);
+				console.log(
+					'line:' +
+						line +
+						'\nstart: ' +
+						start +
+						' start_byte: ' +
+						rewrite.range.start_byte +
+						'\nend: ' +
+						end +
+						' end_byte: ' +
+						rewrite.range.end_byte +
+						'\n first condition: ' +
+						(rewrite.range.start_byte >= start) +
+						' second condition: ' +
+						(rewrite.range.end_byte <= end) +
+						'\ncurrBytes: ' +
+						currBytes +
+						' whitespacecount: ' +
+						whitespaceCount
+				);
 
 				// This particular line has been found in our rewrites...
 				if (rewrite.range.start_byte >= start && rewrite.range.end_byte <= end) {
-					console.warn("Found a diff at line: ", i);
-					beforeLines.push({ value: rewrite.original, flag: true});
-					afterLines.push({ value: rewrite.replacement, flag: true});
+					console.warn('Found a diff at line: ', i);
+					beforeLines.push({ value: rewrite.original, flag: true });
+					afterLines.push({ value: rewrite.replacement, flag: true });
 					foundMatch = true;
 					break; // TODO: Could there be more than one rewrite for a given set of bytes? here we just assume not.
 				}
 			}
 
 			if (!foundMatch) {
-				console.warn("Found nothing at line: ", i);
-				beforeLines.push({ value: originalLines[i], flag: false});
-				afterLines.push({ value: originalLines[i], flag: false});
+				console.warn('Found nothing at line: ', i);
+				beforeLines.push({ value: originalLines[i], flag: false });
+				afterLines.push({ value: originalLines[i], flag: false });
 			}
 
 			currBytes += originalLines[i].length + 1; // Plus 1 for the new line we just traversed.
@@ -123,7 +139,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						{#each beforeLines as {value, flag}}
+						{#each beforeLines as { value, flag }}
 							<tr>
 								<td><pre class:codered={flag}>{value}</pre></td>
 							</tr>
@@ -138,14 +154,13 @@
 						</tr>
 					</thead>
 					<tbody>
-						{#each afterLines as {value, flag}}
+						{#each afterLines as { value, flag }}
 							<tr>
 								<td><pre class:codegreen={flag}>{value}</pre></td>
 							</tr>
 						{/each}
 					</tbody>
 				</table>
-				
 			</div>
 		{/if}
 	</div>
