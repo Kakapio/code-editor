@@ -85,7 +85,7 @@
 				if (rewrite.range.start_byte >= start && rewrite.range.end_byte <= end) {
 					console.warn("Found a diff at line: ", i);
 					beforeLines.push({ value: rewrite.original, flag: true});
-					afterLines.push({ value: rewrite.original, flag: true});
+					afterLines.push({ value: rewrite.replacement, flag: true});
 					foundMatch = true;
 					break; // TODO: Could there be more than one rewrite for a given set of bytes? here we just assume not.
 				}
