@@ -8,7 +8,7 @@
 	export let rewrites = [];
 
 	let activeTab = 'textarea';
-	let originalText = '';
+	export let originalText = '';
 	/**
 	 * @type {string[]}
 	 * The original data in a list of lines.
@@ -31,12 +31,10 @@
 	}
 
 	/**
-	 * @param {string} text
 	 * This is only run when we successfully generate cleaned up code.
 	 */
-	export function createDiff(text) {
-		originalText = text;
-		originalLines = text.split('\n');
+	export function createDiff() {
+		originalLines = originalText.split('\n');
 		generateTables();
 	}
 

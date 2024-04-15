@@ -76,18 +76,15 @@
 				console.log("received: " + JSON.stringify(data));
 				outputText = data['output'];
 				rewrites = data['rewrites'];
-				viewerInstance.createDiff(inputText); // Pass this in for the calculations of our diff view.
 			})
 			.catch((error) => {
 				toast.error('Encountered an error: ' + error.message);
-			});
+			}).then((_) => viewerInstance.createDiff()); // This statement is necessary to make sure the rewrites are in place before making diffs.
 	}
-
-	function runWrapper() { runCleanup(); runCleanup();}
 </script>
 
 <div class="buttonContainer">
-	<button on:click={runWrapper}>Run</button>
+	<button on:click={runCleanup}>Run</button>
 	<button on:click={clearEditor}>Clear</button>
 </div>
 
@@ -102,7 +99,7 @@
 
 <div class="textContainer">
 	<TextEditor bind:text={inputText} bind:this={editorInstance} />
-	<TextViewer text={outputText} {rewrites} bind:this={viewerInstance} />
+	<TextViewer originalText={inputText} text={outputText} rewrites={rewrites} bind:this={viewerInstance} />
 </div>
 
 <style>
