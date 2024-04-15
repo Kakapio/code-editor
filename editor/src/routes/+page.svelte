@@ -78,10 +78,11 @@
 				rewrites = data['rewrites'];
 			})
 			.catch((error) => {
-				if (error.message.includes("Unexpected")) {
-					toast.error("It looks like you forgot to specify the correct arguments. Add the flag and value on the left.");
-				}
-				else { 
+				if (error.message.includes('Unexpected')) {
+					toast.error(
+						'It looks like you forgot to specify the correct arguments. Add the flag and value on the left.'
+					);
+				} else {
 					toast.error('Encountered an error: ' + error.message);
 				}
 			})
