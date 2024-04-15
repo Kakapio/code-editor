@@ -42,6 +42,8 @@
 
 	export function clear() {
 		text = 'This is where your cleaned up code will be...';
+		beforeLines.length = 0; // Clear our tables.
+		afterLines.length = 0;
 	}
 
 	/**
