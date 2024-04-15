@@ -43,7 +43,7 @@
 	</select>
 </div>
 
-<p style="color: white;">Selected option: {selectedOption}</p>
+<!--TODO: for debug <p style="color: white;">Selected option: {selectedOption}</p> -->
 
 <style>
 	/* Style the select element */

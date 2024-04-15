@@ -62,7 +62,7 @@
 			postData[item.key] = item.value;
 		});
 		let jsonCompatibleData = JSON.stringify(postData);
-		console.log(jsonCompatibleData);
+		console.log("payload: " + jsonCompatibleData);
 
 		fetch('https://5znoj6mlp7xtbjgyofoqzartjm0xdxkp.lambda-url.us-east-1.on.aws/playground/play', {
 			method: 'POST',
@@ -73,18 +73,21 @@
 		})
 			.then((response) => response.json())
 			.then((data) => {
+				console.log("received: " + JSON.stringify(data));
 				outputText = data['output'];
 				rewrites = data['rewrites'];
-				viewerInstance.setOriginalText(inputText); // Pass this in for the 'before' of our diff view. Only shown when successfully processed.
+				viewerInstance.createDiff(inputText); // Pass this in for the calculations of our diff view.
 			})
 			.catch((error) => {
 				toast.error('Encountered an error: ' + error.message);
 			});
 	}
+
+	function runWrapper() { runCleanup(); runCleanup();}
 </script>
 
 <div class="buttonContainer">
-	<button on:click={runCleanup}>Run</button>
+	<button on:click={runWrapper}>Run</button>
 	<button on:click={clearEditor}>Clear</button>
 </div>
 
@@ -99,7 +102,7 @@
 
 <div class="textContainer">
 	<TextEditor bind:text={inputText} bind:this={editorInstance} />
-	<TextViewer text={outputText} rewrites={rewrites} bind:this={viewerInstance} />
+	<TextViewer text={outputText} {rewrites} bind:this={viewerInstance} />
 </div>
 
 <style>
@@ -111,6 +114,7 @@
 	.textContainer {
 		display: flex;
 		justify-content: space-evenly;
+		margin-top: 10px;
 	}
 
 	.buttonContainer {

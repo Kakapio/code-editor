@@ -33,7 +33,7 @@
 	</div>
 {/each}
 
-<pre style="color: white;">{JSON.stringify(pairs, null, 2)}</pre>
+<!-- TODO: for debug <pre style="color: white;">{JSON.stringify(pairs, null, 2)}</pre> -->
 
 <style>
 	button {
@@ -54,6 +54,7 @@
 		color: rgb(95, 218, 255);
 		border-radius: 2px;
 		margin-bottom: 8px;
+		margin-top: 8px;
 		margin-left: 1.85%;
 	}
 

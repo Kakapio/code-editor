@@ -1,18 +1,21 @@
 <!-- TextEditor.svelte -->
 <script>
 	export let text = '';
-	
+
 	/**
 	 * @type {{ [x: string]: any; }[]}
 	 */
-	 export let rewrites = [];
+	export let rewrites = [];
 
-	let beforeText = '';
 	let activeTab = 'textarea';
+	let originalText = '';
 	/**
 	 * @type {string[]}
+	 * The original data in a list of lines.
 	 */
+	let originalLines = [];
 	let beforeLines = [];
+	let afterLines = [];
 
 	/**
 	 * @param {{ target: { value: string; }; }} event
@@ -25,9 +28,10 @@
 	 * @param {string} text
 	 * This is only run when we successfully generate cleaned up code.
 	 */
-	 export function setOriginalText(text) {
-		beforeText = text;
-		beforeLines = beforeText.split("\n");
+	export function createDiff(text) {
+		originalText = text;
+		originalLines = text.split('\n');
+		generateTables();
 	}
 
 	export function clear() {
@@ -39,6 +43,55 @@
 	 */
 	function switchTab(tabName) {
 		activeTab = tabName;
+	}
+
+	function generateTables() {
+		beforeLines.length = 0; // Clear our tables.
+		afterLines.length = 0;
+		
+		let currBytes = 0; // the number of bytes we have consumed thus far. Used to track our position.
+		console.log("Rewrites length is " + rewrites.length);
+
+		// I make a lot of assumptions here about rewrites being by line, etc... 
+		// A rewrite occurring in the middle of a line would break this. But even GitHub doesn't do that.
+		for (let i = 0; i < originalLines.length; i++) {
+			
+			let line = originalLines[i];
+			// Count how much white space we have... This is ignored on the backend so we must also do that.
+			let whitespaceCount = line.length - line.trimStart().length; 
+			let foundMatch = false; // So we can track whether a match was found outside the inner loop.
+
+			// Check the bounds of each line against every item in the rewrite array...
+			// This would be more efficient if rewrite array was ordered by start_byte. Could do O(n) rather than (n^2).
+			for (let j = 0; j < rewrites.length; j++) {
+				let rewrite = rewrites[j];
+
+				let start = currBytes; // Starting byte of this line.
+				let end = start + line.length; // End byte.
+
+				console.log("line:" + line + "\nstart: " + 
+				start + " start_byte: " + rewrite.range.start_byte + "\nend: " + end + " end_byte: " + rewrite.range.end_byte + 
+				"\n first condition: " + (rewrite.range.start_byte >= start) + " second condition: " + (rewrite.range.end_byte <= end) + 
+				"\ncurrBytes: " + currBytes + " whitespacecount: " + whitespaceCount);
+
+				// This particular line has been found in our rewrites...
+				if (rewrite.range.start_byte >= start && rewrite.range.end_byte <= end) {
+					console.log("Found a diff at line: ", i);
+					beforeLines.push(rewrite.original);
+					afterLines.push(rewrite.replacement);
+					foundMatch = true;
+					break; // TODO: Could there be more than one rewrite for a given set of bytes? here we just assume not.
+				}
+			}
+
+			if (!foundMatch) {
+				console.log("Found nothing at line: ", i);
+				beforeLines.push(originalLines[i]);
+				afterLines.push(originalLines[i]);
+			}
+
+			currBytes += originalLines[i].length + 1; // Plus 1 for the new line we just traversed.
+		}
 	}
 </script>
 
@@ -57,37 +110,37 @@
 				class:default-text={text === 'This is where your cleaned up code will be...'}
 			></textarea>
 		{:else if activeTab === 'table'}
-		<div class="two-column-table">
-			<table>
-				<thead>
-					<tr>
-					  <th>Original</th>
-					</tr>
-				  </thead>
-				<tbody>
-				  {#each beforeLines as line}
-					<tr>
-					  <td><pre class="code">{line}</pre></td>
-					</tr>
-				  {/each}
-				</tbody>
-			  </table>
+			<div class="two-column-table">
+				<table>
+					<thead>
+						<tr>
+							<th>Original</th>
+						</tr>
+					</thead>
+					<tbody>
+						{#each beforeLines as line}
+							<tr>
+								<td><pre class="code">{line}</pre></td>
+							</tr>
+						{/each}
+					</tbody>
+				</table>
 
-			  <table>
-				<thead>
-					<tr>
-					  <th>Replacement</th>
-					</tr>
-				  </thead>
-				<tbody>
-				  {#each beforeLines as line}
-					<tr>
-					  <td><pre class="code">{line}</pre></td>
-					</tr>
-				  {/each}
-				</tbody>
-			  </table>
-		</div>
+				<table>
+					<thead>
+						<tr>
+							<th>Replacement</th>
+						</tr>
+					</thead>
+					<tbody>
+						{#each afterLines as line}
+							<tr>
+								<td><pre class="code">{line}</pre></td>
+							</tr>
+						{/each}
+					</tbody>
+				</table>
+			</div>
 		{/if}
 	</div>
 </div>
@@ -129,8 +182,8 @@
 	}
 
 	.code {
-    line-height: 0.1; /* Adjust this value as needed */
-  }
+		line-height: 0.1; /* Adjust this value as needed */
+	}
 
 	button {
 		font-size: 16px;
@@ -167,8 +220,8 @@
 	}
 
 	.two-column-table {
-    display: flex;
-}
+		display: flex;
+	}
 
 	/* Define custom scrollbar colors for entire site */
 	:global(html) {
