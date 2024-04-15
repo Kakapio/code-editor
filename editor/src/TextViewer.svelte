@@ -145,6 +145,7 @@
 						{/each}
 					</tbody>
 				</table>
+				
 			</div>
 		{/if}
 	</div>
@@ -167,7 +168,7 @@
 	}
 
 	th {
-		color: white;
+		color: rgb(95, 218, 255);
 		font-family: 'Roboto', sans-serif;
 	}
 
@@ -181,10 +182,6 @@
 		height: 523px;
 		border-spacing: 0; /* Remove gaps between table rows */
 		border: 2px solid #21242d;
-	}
-
-	th {
-		color: rgb(95, 218, 255);
 	}
 
 	.codered {
