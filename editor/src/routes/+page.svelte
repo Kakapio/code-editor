@@ -37,6 +37,10 @@
 	function clearEditor() {
 		editorInstance.clear();
 		viewerInstance.clear();
+
+		outputText = 'This is where your cleaned up code will be...'; // Data that flows from page -> viewer should be cleared by the page.
+		rewrites.length = 0;
+
 		selectedLang = '';
 		keyValueInstance.clear();
 		toast.success('Cleared editor!');

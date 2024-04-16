@@ -42,6 +42,7 @@
 		let initialText = originalText;
 		beforeFrames.length = 0; // Clear these out.
 		afterFrames.length = 0;
+		currentStep = writable(0);
 
 		for (let i = 0; i < rewrites.length; i++) {
 			let out = generateFrame(initialText, i);
@@ -75,7 +76,6 @@
 	}
 
 	export function clear() {
-		text = 'This is where your cleaned up code will be...';
 		beforeFrames.length = 0; // Clear our tables.
 		afterFrames.length = 0;
 	}
