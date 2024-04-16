@@ -4,7 +4,6 @@
     export let input = '';
     export let output = '';
   
-    let diff = [];
     let beforeDisplay = [];
     let afterDisplay = [];
   
@@ -13,8 +12,8 @@
         afterDisplay = [];
     }
 
-    function createDiff() {
-      diff = Diff.diffLines(input, output);
+    export function createDiff() {
+      let diff = Diff.diffLines(input, output);
   
       // Clear the display contents
       beforeDisplay = [];
@@ -42,18 +41,18 @@
     $: createDiff();
   </script>
   
-  <pre id="display">
+  <pre>
     {@html beforeDisplay.join('')} <!-- Render the display content -->
   </pre>
 
-  <pre id="display">
+  <pre>
     {@html afterDisplay.join('')} <!-- Render the display content -->
   </pre>
 
 <style>
 	pre {
 		width: 45%;
-		height: 500px;
+		height: 100%;
 		border: 2px solid #21242d;
 		padding: 10px;
 		font-size: 16px;
