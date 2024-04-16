@@ -47,22 +47,20 @@
 
 			// Create our tables here.
 			// This is how we organize the raw text into rows.
-			let beforeLines = initialText.split("\n");
+			let beforeLines = initialText.split('\n');
 			let beforeTuples = beforeLines.map((line, index) => {
 				if (index >= out.startRow && index <= out.endRow) {
 					return { value: line, flag: true };
-				}
-				else {
+				} else {
 					return { value: line, flag: false };
 				}
 			});
 
-			let afterLines = out.after.split("\n");
+			let afterLines = out.after.split('\n');
 			let afterTuples = afterLines.map((line, index) => {
 				if (index >= out.startRow && index <= out.endRow) {
 					return { value: line, flag: true };
-				}
-				else {
+				} else {
 					return { value: line, flag: false };
 				}
 			});
@@ -112,8 +110,15 @@
 	 */
 	function generateFrame(inputText, index) {
 		let rewrite = rewrites[index];
-		let afterText = inputText.slice(0, rewrite.range.start_byte) + rewrite.replacement + inputText.slice(rewrite.range.end_byte);
-		return { after: afterText, startRow: rewrite.range.start_point.row, endRow: rewrite.range.end_point.row };
+		let afterText =
+			inputText.slice(0, rewrite.range.start_byte) +
+			rewrite.replacement +
+			inputText.slice(rewrite.range.end_byte);
+		return {
+			after: afterText,
+			startRow: rewrite.range.start_point.row,
+			endRow: rewrite.range.end_point.row
+		};
 	}
 </script>
 
@@ -128,7 +133,7 @@
 		{#if rewrites.length > 0 && activeTab === 'table'}
 			<button on:click={subtractStep}>Step Back</button>
 			<button on:click={addStep}>Step Forward</button>
-			<button disabled>{($currentStep + 1) + "/" + rewrites.length}</button>
+			<button disabled>{$currentStep + 1 + '/' + rewrites.length}</button>
 		{/if}
 	</div>
 	<div class="tab-content">
@@ -136,7 +141,7 @@
 			<textarea
 				bind:value={text}
 				readonly={true}
-				class:default-text={text === 'This is where your cleaned up code will be...'}
+				placeholder="This is where your cleaned code will appear..."
 			></textarea>
 		{:else if activeTab === 'table' && beforeFrames.length > 0}
 			<div class="two-column-table">
@@ -223,11 +228,6 @@
 		background-color: #21242d;
 		color: rgb(169, 169, 169);
 		border-radius: 0px;
-	}
-
-	.default-text {
-		font-style: italic;
-		color: rgb(169, 169, 169);
 	}
 
 	.selected {

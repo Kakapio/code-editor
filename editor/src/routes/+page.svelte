@@ -7,7 +7,7 @@
 	import toast, { Toaster } from 'svelte-french-toast';
 
 	let inputText = '';
-	let outputText = 'This is where your cleaned up code will be...';
+	let outputText = '';
 	let selectedLang = '';
 	/**
 	 * @type {{ original: string, range: string }[]}
@@ -43,8 +43,9 @@
 	function clearEditor() {
 		editorInstance.clear();
 		viewerInstance.clear();
+		diffViewInstance.clear();
 
-		outputText = 'This is where your cleaned up code will be...'; // Data that flows from page -> viewer should be cleared by the page.
+		outputText = ''; // Data that flows from page -> viewer should be cleared by the page.
 		rewrites.length = 0;
 
 		selectedLang = '';
@@ -123,7 +124,7 @@
 </div>
 
 <div class="diffContainer">
-	<DiffView input={inputText} output={outputText} bind:this={diffViewInstance}/>
+	<DiffView input={inputText} output={outputText} bind:this={diffViewInstance} />
 </div>
 
 <style>
