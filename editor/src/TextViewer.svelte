@@ -8,7 +8,7 @@
 	 * @type {{ [x: string]: any; }[]}
 	 */
 	export let rewrites = [];
-	export let originalText = '';
+	export let originalText = ''; // This is what the user inputted.
 	/**
 	 * @type {{value: string; flag: boolean}[]}
 	 * Each index represents the state of the diff after the nth rewrite is applied.
@@ -40,14 +40,13 @@
 	 */
 	export function createDiff() {
 		let initialText = originalText;
-		beforeFrames.length = 0; // Clear these out.
-		afterFrames.length = 0;
-		currentStep = writable(0);
+		clear();
 
 		for (let i = 0; i < rewrites.length; i++) {
 			let out = generateFrame(initialText, i);
 
 			// Create our tables here.
+			// This is how we organize the raw text into rows.
 			let beforeLines = initialText.split("\n");
 			let beforeTuples = beforeLines.map((line, index) => {
 				if (index >= out.startRow && index <= out.endRow) {
@@ -68,7 +67,7 @@
 				}
 			});
 
-			initialText = out.after; // Setup for next rewrite...
+			initialText = out.after; // Setup for next rewrite, since they are recursive.
 
 			beforeFrames.push(beforeTuples);
 			afterFrames.push(afterTuples);
@@ -78,6 +77,7 @@
 	export function clear() {
 		beforeFrames.length = 0; // Clear our tables.
 		afterFrames.length = 0;
+		currentStep = writable(0);
 	}
 
 	/**
@@ -202,7 +202,7 @@
 
 	table {
 		width: 100%;
-		height: 523px;
+		height: 100%;
 		border-spacing: 0; /* Remove gaps between table rows */
 		border: 2px solid #21242d;
 	}

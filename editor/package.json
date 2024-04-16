@@ -30,6 +30,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"diff": "^5.2.0",
 		"svelte-french-toast": "^1.2.0"
 	}
 }

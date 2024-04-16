@@ -3,6 +3,7 @@
 	import TextViewer from '../TextViewer.svelte';
 	import LangMenu from '../LangMenu.svelte';
 	import KeyValue from '../KeyValue.svelte';
+	import DiffView from '../DiffView.svelte';
 	import toast, { Toaster } from 'svelte-french-toast';
 
 	let inputText = '';
@@ -33,6 +34,11 @@
 	 * @type {KeyValue}
 	 */
 	let keyValueInstance;
+
+	/**
+	 * @type {DiffView}
+	 */
+	let diffViewInstance;
 
 	function clearEditor() {
 		editorInstance.clear();
@@ -90,7 +96,10 @@
 					toast.error('Encountered an error: ' + error.message);
 				}
 			})
-			.then((_) => viewerInstance.createDiff()); // This statement is necessary to make sure the rewrites are in place before making diffs.
+			.then((_) => {
+				viewerInstance.createDiff();
+				diffViewInstance.createDiff();
+			}); // This statement is necessary to make sure the rewrites are in place before making diffs.
 	}
 </script>
 
@@ -113,6 +122,10 @@
 	<TextViewer originalText={inputText} text={outputText} {rewrites} bind:this={viewerInstance} />
 </div>
 
+<div class="diffContainer">
+	<DiffView input={inputText} output={outputText} bind:this={diffViewInstance}/>
+</div>
+
 <style>
 	/* Set background color on the root element */
 	:root {
@@ -122,6 +135,12 @@
 	.textContainer {
 		display: flex;
 		justify-content: space-evenly;
+		margin-top: 10px;
+	}
+
+	.diffContainer {
+		display: flex;
+		justify-content: center;
 		margin-top: 10px;
 	}
 
