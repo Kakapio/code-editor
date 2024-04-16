@@ -10,11 +10,6 @@
 	export let rewrites = [];
 	export let originalText = '';
 	/**
-	 * @type {string[]}
-	 * The original data in a list of lines.
-	 */
-	let originalLines = [];
-	/**
 	 * @type {{value: string; flag: boolean}[]}
 	 * Each index represents the state of the diff after the nth rewrite is applied.
 	 */
@@ -30,7 +25,6 @@
 	 * Each steps changes are applied to the output of the previous step.
 	 * This means we can get the state at each point even when recursive rewrites are applied.
 	 */
-	let renderedRewrites = [];
 	let activeTab = 'textarea';
 	let currentStep = writable(0);
 
@@ -42,35 +36,41 @@
 	}
 
 	/**
-	 * This is only run when we successfully generate cleaned up code.
+	 * Create all our frames and properly organize the output data.
 	 */
 	export function createDiff() {
-		originalLines = originalText.split('\n');
-		// Map over originalLines and transform each line into a tuple
-		let tuples = originalLines.map((line) => ({ value: line, flag: true }));
+		let initialText = originalText;
+		beforeFrames.length = 0; // Clear these out.
+		afterFrames.length = 0;
 
-		// Until all our rewrites are consumed or we hit 10 rewrites.
-		let timeoutLimit = 0;
-		while (rewrites.length > 0 && timeoutLimit < 10) {
-			if (afterFrames.length == 0) {
-				// First iteration
-				let out = generateFrame(tuples);
-				beforeFrames.push(out.before); // out.before is the beforeList of tuples <string, bool>.
-				afterFrames.push(out.after);
-			} else {
-				console.warn(
-					'Beforeframes has ' +
-						beforeFrames.length +
-						'Afterframes has ' +
-						(afterFrames.length - 1) +
-						' in it'
-				);
-				let out = generateFrame(afterFrames[afterFrames.length - 1]); // Use our newest frame for the next frame.
-				beforeFrames.push(out.before);
-				afterFrames.push(out.after);
-			}
+		for (let i = 0; i < rewrites.length; i++) {
+			let out = generateFrame(initialText, i);
 
-			timeoutLimit++;
+			// Create our tables here.
+			let beforeLines = initialText.split("\n");
+			let beforeTuples = beforeLines.map((line, index) => {
+				if (index >= out.startRow && index <= out.endRow) {
+					return { value: line, flag: true };
+				}
+				else {
+					return { value: line, flag: false };
+				}
+			});
+
+			let afterLines = out.after.split("\n");
+			let afterTuples = afterLines.map((line, index) => {
+				if (index >= out.startRow && index <= out.endRow) {
+					return { value: line, flag: true };
+				}
+				else {
+					return { value: line, flag: false };
+				}
+			});
+
+			initialText = out.after; // Setup for next rewrite...
+
+			beforeFrames.push(beforeTuples);
+			afterFrames.push(afterTuples);
 		}
 	}
 
@@ -107,81 +107,13 @@
 	}
 
 	/**
-	 * @param {{value: string, flag: boolean}[]} [inputLines]
+	 * @param {string} [inputText] Generate a frame using a given rewrite.
+	 * @param {number} [index]
 	 */
-	function generateFrame(inputLines) {
-		inputLines = inputLines || []; // Provide a default value if inputLines is undefined
-		let beforeLines = []; // Tables to hold this particular frame.
-		let afterLines = [];
-
-		let currBytes = 0; // the number of bytes we have consumed thus far. Used to track our position.
-		let foundMatchEver = false; // whether we have found any matches during this function call.
-		console.error('Rewrites length is ' + rewrites.length);
-
-		// I make a lot of assumptions here about rewrites being by line, etc...
-		// A rewrite occurring in the middle of a line would break this. But even GitHub doesn't do that.
-		for (let i = 0; i < inputLines.length; i++) {
-			let line = inputLines[i].value;
-			console.warn('This should be the same line: ' + JSON.stringify(inputLines[i].value));
-			// Count how much white space we have... This is ignored on the backend so we must also do that.
-			let whitespaceCount = line.length - line.trimStart().length;
-			let foundLineMatch = false; // So we can track whether a match was found for this particular line.
-
-			// Check the bounds of each line against every item in the rewrite array...
-			// This would be more efficient if rewrite array was ordered by start_byte. Could do O(n) rather than (n^2).
-			for (let j = 0; j < rewrites.length; j++) {
-				let rewrite = rewrites[j];
-
-				let start = currBytes; // Starting byte of this line.
-				let end = start + line.length; // End byte.
-
-				// console.log(
-				// 	'line:' +
-				// 		line +
-				// 		'\nstart: ' +
-				// 		start +
-				// 		' start_byte: ' +
-				// 		rewrite.range.start_byte +
-				// 		'\nend: ' +
-				// 		end +
-				// 		' end_byte: ' +
-				// 		rewrite.range.end_byte +
-				// 		'\n first condition: ' +
-				// 		(rewrite.range.start_byte >= start) +
-				// 		' second condition: ' +
-				// 		(rewrite.range.end_byte <= end) +
-				// 		'\ncurrBytes: ' +
-				// 		currBytes +
-				// 		' whitespacecount: ' +
-				// 		whitespaceCount
-				// );
-
-				// This particular line has been found in our rewrites...
-				// !foundMatchEver is here because once we find a match for a rewrite, we are done. We limit
-				// each diff to one change.
-				if (!foundMatchEver && rewrite.range.start_byte >= start && rewrite.range.end_byte <= end) {
-					console.log("Found a diff at line: " + i + "\npushing before: " + JSON.stringify(rewrite.original)
-					+ "\npushing after: " + JSON.stringify(rewrite.replacement));
-					rewrites = rewrites.filter((_, index) => index !== j); // Remove this used rewrite
-					beforeLines.push({ value: rewrite.original, flag: true });
-					afterLines.push({ value: rewrite.replacement, flag: true });
-					foundLineMatch = true;
-					foundMatchEver = true;
-					break; // TODO: Could there be more than one rewrite for a given set of bytes? here we just assume not.
-				}
-			}
-
-			// If we couldn't find a changed line, just use the original.
-			if (!foundLineMatch) {
-				//console.warn('Found nothing at line: ', i);
-				beforeLines.push({ value: inputLines[i].value, flag: false });
-				afterLines.push({ value: inputLines[i].value, flag: false });
-			}
-
-			currBytes += inputLines[i].value.length + 1; // Plus 1 for the new line we just traversed.
-		}
-
-		return { before: beforeLines, after: afterLines };
+	function generateFrame(inputText, index) {
+		let rewrite = rewrites[index];
+		let afterText = inputText.slice(0, rewrite.range.start_byte) + rewrite.replacement + inputText.slice(rewrite.range.end_byte);
+		return { after: afterText, startRow: rewrite.range.start_point.row, endRow: rewrite.range.end_point.row };
 	}
 </script>
 
@@ -196,6 +128,7 @@
 		{#if rewrites.length > 0 && activeTab === 'table'}
 			<button on:click={subtractStep}>Step Back</button>
 			<button on:click={addStep}>Step Forward</button>
+			<button disabled>{($currentStep + 1) + "/" + rewrites.length}</button>
 		{/if}
 	</div>
 	<div class="tab-content">
